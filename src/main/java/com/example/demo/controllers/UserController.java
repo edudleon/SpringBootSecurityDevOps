@@ -50,16 +50,18 @@ public class UserController {
 		user.setUsername(createUserRequest.getUsername());
 		Cart cart = new Cart();
 
-		logger.info("UsernameToStore: "+ createUserRequest.getUsername());
+		logger.info("Info:UsernameToStore: "+ createUserRequest.getUsername());
 
 		cartRepository.save(cart);
 		user.setCart(cart);
 		if(createUserRequest.getPassword().length() < 7 || !createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
+			logger.error("Error:InvalidPassword: Username: " + createUserRequest.getUsername() + "Cause: " + "password failed to meet minimal requeriments 7 characters of length and passsword and confirmPassword must be the same");
 			return ResponseEntity.badRequest().build();
 		}
 		//password encoding
 		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
 		userRepository.save(user);
+		logger.info("Success:UserCreated: " + createUserRequest.getUsername());
 		return ResponseEntity.ok(user);
 	}
 	
